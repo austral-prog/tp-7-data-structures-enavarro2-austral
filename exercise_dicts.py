@@ -1,6 +1,5 @@
 # Ejercicios de diccionarios: sistema de inventario
 
-
 def create_inventory(items):
     """
     Crea un diccionario "inventario" a partir de una lista de items.
@@ -13,8 +12,18 @@ def create_inventory(items):
     Returns:
         Un diccionario con cada item y su cantidad
     """
-    pass  # Reemplazar con tu implementación
+    inventario = {}
+    cantidad_item = 0
+    for item in items:
+        if item in inventario:
+            cantidad_item += 1
+            inventario[item] = cantidad_item
+        else:
+            cantidad_item = 0
+            cantidad_item += 1
+            inventario[item] = cantidad_item
 
+    return inventario
 
 def add_items(inventario, items):
     """
@@ -29,7 +38,13 @@ def add_items(inventario, items):
     Returns:
         El inventario actualizado
     """
-    pass  # Reemplazar con tu implementación
+    for item in items:
+        if item in inventario:
+            inventario[item] += 1
+        else:
+            inventario[item] = 1
+    
+    return inventario
 
 
 def decrement_items(inventario, items):
@@ -46,8 +61,11 @@ def decrement_items(inventario, items):
     Returns:
         El inventario actualizado (sin valores negativos)
     """
-    pass  # Reemplazar con tu implementación
-
+    for item in items:
+        if inventario.get(item, 0) > 0: # Devuelve 0 si el ítem no existe
+            inventario[item] -= 1
+        
+    return inventario
 
 def remove_item(inventario, item):
     """
@@ -61,8 +79,11 @@ def remove_item(inventario, item):
     Returns:
         El inventario actualizado (o sin cambios si el item no existe)
     """
-    pass  # Reemplazar con tu implementación
-
+    if inventario.get(item):
+        inventario.pop(item)
+        return inventario
+    else:
+        return inventario
 
 def list_inventory(inventario):
     """
@@ -75,7 +96,18 @@ def list_inventory(inventario):
     Returns:
         Lista de tuplas (item, cantidad) con cantidad > 0
     """
-    pass  # Reemplazar con tu implementación
+    lista_de_tuplas = []
+    claves_a_eliminar = []
+    for i in inventario:
+        if inventario[i] <= 0:
+            claves_a_eliminar.append(i) # Guardo las claves a eliminar en una lista porque no se puede modificar el tamaño de un diccionario mientras se itera
+    for i in claves_a_eliminar:
+        inventario.pop(i)
+    for clave in inventario:
+        # No uso "tupla = inventario.items()" --> Esto devuelve "dict_items([('iron', 1), ('diamond', 4), ('gold', 0)])"
+        tupla = (clave, inventario[clave])
+        lista_de_tuplas.append(tupla)
+    return lista_de_tuplas
 
 
 def find_max_value(diccionario):
@@ -93,7 +125,19 @@ def find_max_value(diccionario):
     Ejemplo:
         find_max_value({'John': 85, 'Emma': 92, 'Sophia': 78}) -> 'Emma'
     """
-    pass  # Reemplazar con tu implementación
+    valores = []
+    if diccionario:
+        for clave in diccionario:
+            valor = diccionario[clave]
+            valores.append(valor) # [1,0,4]
+        valor_mas_alto = max(valores)
+        for i in diccionario:
+            if diccionario[i] == valor_mas_alto:
+                return i
+    else:
+        return ""
+    
+    # return max(diccionario, key=diccionario.get) if diccionario else "" --> Oneliner
 
 
 def reverse_dict(diccionario):
@@ -112,7 +156,11 @@ def reverse_dict(diccionario):
         reverse_dict({'a': 1, 'b': 2, 'c': 3, 'd': 3, 'e': 2})
         -> {1: 'a', 2: 'be', 3: 'cd'}
     """
-    pass  # Reemplazar con tu implementación
+    mi_dict_reverso = {}
+    for clave, valor in diccionario.items():
+        mi_dict_reverso[valor] = mi_dict_reverso.get(valor, "") + clave
+    
+    return mi_dict_reverso
 
 
 def word_frequency(palabras):
@@ -131,7 +179,13 @@ def word_frequency(palabras):
         word_frequency(["apple", "banana", "apple", "orange", "banana", "apple"])
         -> {'apple': 3, 'banana': 2, 'orange': 1}
     """
-    pass  # Reemplazar con tu implementación
+    diccionario = {}
+    if palabras:
+        for elemento in palabras:
+            diccionario[elemento] = diccionario.get(elemento, 0)+1
+        return diccionario
+    else:
+        return {}
 
 
 def find_biggest_expense(gastos):
@@ -151,7 +205,18 @@ def find_biggest_expense(gastos):
                               'Transport': [10, 1, 2],
                               'Games': [10, 20, 30]}) -> 'Food'
     """
-    pass  # Reemplazar con tu implementación
+    promedios = []
+    if gastos:
+        for lista in gastos.values():
+            suma_de_valores = 0
+            for valor in lista:
+                suma_de_valores += valor
+            promedio = suma_de_valores/len(lista)
+            promedios.append(promedio)
+        indice = promedios.index(max(promedios))
+        return list(gastos)[indice]
+    else:
+        return ""
 
 
 def sum_expenses(gastos):
@@ -171,8 +236,13 @@ def sum_expenses(gastos):
                       'Games': [10, 20, 30]})
         -> {'Food': 240, 'Transport': 13, 'Games': 60}
     """
-    pass  # Reemplazar con tu implementación
-
+    diccionario = {}
+    for clave, lista in gastos.items():
+        suma_de_valores = 0
+        for valor in lista:
+            suma_de_valores += valor
+        diccionario[clave] = suma_de_valores
+    return diccionario
 
 def sum_expenses_by_type(gastos):
     """
@@ -194,4 +264,15 @@ def sum_expenses_by_type(gastos):
         })
         -> {'A': 96, 'B': 174, 'C': 104}
     """
-    pass  # Reemplazar con tu implementación
+    diccionario = {}
+    lista_general = []
+    for lista in gastos.values():
+        for tupla in lista:
+            lista_general.append(tupla)
+    
+    for tupla in lista_general:
+        tipo = tupla[0] # Se accede al índice de una tupla con [], no con ().
+        monto = tupla[1]
+        diccionario[tipo] = diccionario.get(tipo, 0) + monto # Cuando se usa get() no es necesario usar ni un if ni un else, ya que la función devuelve el valor predeterminado de forma segura si la clave no existe / No es necesario usar un "if valor not in diccionario" para crear un ítem en un diccionario, ya que se puede crear o actualizar un ítem directamente sin necesidad de comprobar antes si la clave ya existía.
+
+    return diccionario
